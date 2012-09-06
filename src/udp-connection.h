@@ -7,7 +7,6 @@
 
 class UDPConnection {
 protected:
-	int* i;
 	int sockfd;
 	struct sockaddr_in servaddr, cliaddr;
 	unsigned int addrlen;

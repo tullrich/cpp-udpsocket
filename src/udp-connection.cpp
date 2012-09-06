@@ -2,9 +2,9 @@
 #include "udp-connection.h"
 
 UDPConnection::UDPConnection() : servaddr {0}, cliaddr{0}{
-	sockfd = -1;
-	addrlen = sizeof(struct sockaddr_in);
-	i = 0;
+	sockfd              = -1;
+	addrlen             = sizeof(struct sockaddr_in);
+	servaddr.sin_family = AF_INET;
 	printf("Generic connection created\n");
 }
 
@@ -13,11 +13,7 @@ int UDPConnection::start() {
 		perror("can't open datagram socket");
 		return -1;
 	}
-
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(PORT);
-	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
+	
 	if (onSocketCreated() < 0) {
 		perror("error in OnSocketCreated\n");
 		return -1;

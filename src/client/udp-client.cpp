@@ -4,6 +4,7 @@
 
 UDPClient::UDPClient() : UDPConnection() {
 	printf("Client created\n");
+	servaddr.sin_port   = htons(PORT);
 }
 
 int UDPClient::onLoop() {

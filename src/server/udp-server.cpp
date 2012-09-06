@@ -5,6 +5,7 @@
 
 UDPServer::UDPServer() : UDPConnection() {
 	datalen = -1;
+	servaddr.sin_port   = htons(PORT);
 	printf("Server created\n");
 }
 
