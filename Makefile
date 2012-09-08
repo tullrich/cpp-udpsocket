@@ -27,7 +27,7 @@ src/client/%.o: src/client/%.cpp $(CLIENT_DEPS)
 src/server/%.o: src/server/%.cpp $(SERVER_DEPS)
 	$(CXX) -c -o $@ $< $(CPPFLAGS)
 
-src/*.o: src/*.cpp $(_DEPS)
+src/%.o: src/%.cpp $(_DEPS)
 	$(CXX) -c -o $@ $< $(CPPFLAGS)
 
 clean:
