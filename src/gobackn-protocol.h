@@ -24,6 +24,7 @@ class GoBackNProtocol : public Protocol {
 		int last_acked_seqn;
 		int expected_seqn;
 		int last_sent_ackn;
+		int num_active;
 
 		void sendDatagram(char* p);
 		bool canAddToWindow();
@@ -35,6 +36,7 @@ class GoBackNProtocol : public Protocol {
 		bool parseValidDatagram(int *datagram_seqn, char *payload, char* data_in);
 		void removeFromWindow(int mesg_seqn);
 		void sendAck(int seqn);
+		void resendWindow();
 
 	public:
 		GoBackNProtocol();

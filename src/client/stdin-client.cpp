@@ -17,9 +17,9 @@ void StdinClient::start() {
 
 	p->setConnection(c);
 
-	while (fgets(sendline, BUF_SIZE, stdin) != NULL) {
+	while (printf("Input Mesg: ") && gets(sendline) != NULL) {
 		p->sendMessage(sendline, strlen(sendline));
-		printf("MESSAGE '%s' SENT\n", sendline);
+		printf("Application Layer: MESSAGE '%s' SENT\n", sendline);
 	}
 
 	printf("stdin returned NULL\n");

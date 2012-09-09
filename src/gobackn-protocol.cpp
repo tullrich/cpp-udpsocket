@@ -6,11 +6,11 @@
 #include "gobackn-protocol.h"
 
 GoBackNProtocol::GoBackNProtocol() {
-	c = NULL;
-
-	current_seqn = 0;
-	expected_seqn = 0;
-	last_sent_ackn = 0;
+	c               = NULL;
+	current_seqn    = 0;
+	expected_seqn   = 0;
+	last_sent_ackn  = 0;
+	num_active      = 0;
 	last_acked_seqn = LAST_SENT_SEQN;
 }
 
@@ -26,18 +26,33 @@ void GoBackNProtocol::addToWindow(char b) {
 	sprintf(pTemp, DATAGRAM_IDENT" %i %c", current_seqn, b);
 	window[current_seqn] = pTemp;
 	current_seqn = MOD((current_seqn + 1), N);
+	num_active++;
 
 	sendDatagram(pTemp);
 
 }
 
 bool GoBackNProtocol::canAddToWindow() {
-	return abs(current_seqn - last_acked_seqn) > 0;
+	//printf("current_seqn %i last_accked_seqn %i, num_active(%i)", current_seqn, last_acked_seqn, num_active);
+	return num_active < N;
 }
 
 bool GoBackNProtocol::windowEmpty() {
-	printf("last_acked_seqn %i  == LAST_SENT_SEQN %i\n", last_acked_seqn, LAST_SENT_SEQN);
+	//printf("last_acked_seqn %i  == LAST_SENT_SEQN %i\n", last_acked_seqn, LAST_SENT_SEQN);
 	return last_acked_seqn == LAST_SENT_SEQN;
+}
+
+void GoBackNProtocol::resendWindow() {
+	int num_sending;
+
+	num_sending = num_active;
+	printf("\tresending %i datagrams\n", num_active);
+
+	for (int i = 1; i <= num_sending; i++) {
+		int current = MOD(last_acked_seqn + i, N);
+		printf("\t");
+		sendDatagram(window[current]);
+	}
 }
 
 int GoBackNProtocol::sendMessage(char* line, unsigned int t) {
@@ -59,13 +74,12 @@ int GoBackNProtocol::sendMessage(char* line, unsigned int t) {
 
 		/* listen */
 		if (!acceptAcks()) {
-
 			/* our listen timed out, resend the entire window */
-			// resendWindow();
+			resendWindow();
 		}
 	}
 
-	printf("Go back n sendMessage\n");
+	printf("WINDOW EMPTY & ALL BYTES SENT\n");
 }
 
 bool GoBackNProtocol::acceptAcks() {
@@ -83,21 +97,26 @@ void GoBackNProtocol::removeFromWindow(int mesg_seqn) {
 	int num_deleting;
 
 	num_deleting = MOD(mesg_seqn - last_acked_seqn, N);
-	printf("num_deleting %i\n", num_deleting);
+	//printf("num_deleting %i\n", num_deleting);
+
+	if (num_deleting > 0) {
+		printf("\nRECEIVED: ACK %i\n", mesg_seqn);
+	}
 
 	for (int i = 1; i <= num_deleting; i++) {
 		int deleting = MOD(last_acked_seqn + i, N);
-		printf("deleting %i from window\n", deleting);
+		delete window[deleting];
+		num_active--;
+		printf("\tdeleting %i from window\n", deleting);
 	}
 
 	last_acked_seqn = mesg_seqn;
-	printf("removing seqn %i from window\n", mesg_seqn);
 }
 
 bool GoBackNProtocol::parseValidAck(int *ack_seqn, char* data_in) {
 	char whitespace_char;
 
-	printf("Parsing: '%s'\n", data_in);
+	//printf("Parsing: '%s'\n", data_in);
 	if (!sscanf(data_in, ACK_IDENT"%c%d", &whitespace_char, ack_seqn)) {
 		return false;
 	}
@@ -114,13 +133,13 @@ bool GoBackNProtocol::listenForAck() {
 
 	/* listen for an incoming datagram, stop if it times out */
 	if (c->blocking_receive(buffer) == -1) {
-		printf("blocking_received timed out\n");
+		printf("TIMEOUT\n");
 		return false;
 	}
 
 	/* we got something, validate it */
 	if (!parseValidAck(&mesg_seqn, buffer)) {
-		printf("invalid ack, listening again\n");
+		printf("\tBAD ACK '%s', RELISTENING\n", buffer);
 
 		/* this ACK is invalid, reset our timeout and try again */
 		return listenForAck();
