@@ -2,7 +2,7 @@
 #include <cstring>
 #include "stdin-client.h"
 #include "gobackn-protocol.h"
-#include "client-connection.h"
+#include "client-udpconnection.h"
 
 StdinClient::StdinClient(Protocol *p, Connection *c) {
 	this->p = p;
@@ -25,8 +25,9 @@ void StdinClient::start() {
 	printf("stdin returned NULL\n");
 }
 
+/* Run a StdinClient over a ClientUDPConnection using the GoBackNProtocol */
 int main() {
-	ClientConnection c;
+	ClientUDPConnection c;
 	GoBackNProtocol p;
 
 	StdinClient client(&p, &c);

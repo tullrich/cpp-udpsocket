@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include "server-connection.h"
+#include "server-udpconnection.h"
 
-ServerConnection::ServerConnection() : UDPConnection() {
+ServerUDPConnection::ServerUDPConnection() : UDPConnection() {
 	printf("Server created\n");
 }
 
-int ServerConnection::onSocketCreated() {
+int ServerUDPConnection::onSocketCreated() {
 	if (bind(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0) {
 		perror("server: can't bind local address");
 		return -1;
@@ -15,6 +15,6 @@ int ServerConnection::onSocketCreated() {
 	return 0;
 }
 
-ServerConnection::~ServerConnection() {
+ServerUDPConnection::~ServerUDPConnection() {
 	printf("Server destroyed\n");
 }

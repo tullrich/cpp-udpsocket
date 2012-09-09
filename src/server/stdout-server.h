@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+/* shell program that receives input from Connection c using Protocol p
+	and outputs to stdout */
 class StdoutServer {
 private:
 	Protocol *p;

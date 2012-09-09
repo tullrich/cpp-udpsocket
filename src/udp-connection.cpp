@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <memory.h>
 #include "common.h"
+#include "udp-connection.h"
 
 UDPConnection::UDPConnection() : servaddr {0}, cliaddr{0}{
 	sockfd              = -1;

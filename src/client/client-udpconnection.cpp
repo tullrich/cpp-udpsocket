@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <cstring>
-#include "client-connection.h"
+#include "client-udpconnection.h"
 
-ClientConnection::ClientConnection() {
+ClientUDPConnection::ClientUDPConnection() {
 	printf("Client connection created\n");
 	servaddr.sin_port   = htons(PORT);
 }
 
-ClientConnection::~ClientConnection() {
+ClientUDPConnection::~ClientUDPConnection() {
 	printf("Client connection destroyed\n");
 }

@@ -2,7 +2,7 @@
 #include <cstring>
 #include "stdout-server.h"
 #include "gobackn-protocol.h"
-#include "server-connection.h"
+#include "server-udpconnection.h"
 
 StdoutServer::StdoutServer(Protocol *p, Connection *c) {
 	this->p = p;
@@ -27,8 +27,10 @@ void StdoutServer::start() {
 
 }
 
+
+/* Run a StdoutServer over a ServerUDPConnection using the GoBackNProtocol */
 int main() {
-	ServerConnection c;
+	ServerUDPConnection c;
 	GoBackNProtocol p;
 
 	StdoutServer server(&p, &c);
