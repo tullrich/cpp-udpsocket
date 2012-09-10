@@ -3,7 +3,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-#define PORT 12346
+#define DEFAULT_PORT 12346
 #define BUF_SIZE 4096
 
 /* Abstract connection that defines the necessary socket i/o functions.

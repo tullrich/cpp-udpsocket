@@ -8,6 +8,7 @@
 class ClientUDPConnection : public UDPConnection {
 public:
 	ClientUDPConnection();
+	ClientUDPConnection(int port, char* ip_dot_notation);
 	virtual ~ClientUDPConnection();
 };
 

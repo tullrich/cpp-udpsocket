@@ -11,6 +11,7 @@ protected:
 	
 public:
 	ServerUDPConnection();
+	ServerUDPConnection(int port);
 	virtual ~ServerUDPConnection();
 };
 

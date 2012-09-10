@@ -9,7 +9,7 @@ UDPConnection::UDPConnection() : servaddr {0}, cliaddr{0}{
 	servaddr.sin_family = AF_INET;
 
 	datalen = -1;
-	servaddr.sin_port   = htons(PORT);
+	servaddr.sin_port   = htons(DEFAULT_PORT);
 
 	printf("Generic connection created\n");
 }

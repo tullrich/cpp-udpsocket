@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include "server-udpconnection.h"
 
-ServerUDPConnection::ServerUDPConnection() : UDPConnection() {
+ServerUDPConnection::ServerUDPConnection() {
+	printf("Server created\n");
+}
+
+ServerUDPConnection::ServerUDPConnection(int port) {
+	servaddr.sin_port   = htons(port);
 	printf("Server created\n");
 }
 
